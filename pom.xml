@@ -26,6 +26,26 @@
         <artifactId>lombok</artifactId>
         <version>1.18.36</version>
     </dependency>
+    <!-- Spring Boot Web：核心依赖，包含 HttpStatus、@RestControllerAdvice、Interceptor 等 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version> 3.4.2</version>
+    </dependency>
+    <!-- Reflections: 用于运行时扫描类 -->
+    <dependency>
+        <groupId>org.reflections</groupId>
+        <artifactId>reflections</artifactId>
+        <version>0.10.2</version>
+    </dependency>
+
+
+    <!-- Jakarta Servlet API（用于拦截器 HttpServletRequest） -->
+    <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>4.0.4</version>
+    </dependency>
     <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-io</artifactId>

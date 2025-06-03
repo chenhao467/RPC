@@ -27,7 +27,7 @@ public class HttpServerHandler {
         * */
         Class implClass = LocalRegister.get(interfaceName,  invocation.getVersion()==null?"1.0":invocation.getVersion());
         Method method = implClass.getMethod(invocation.getMethodName(), invocation.getParameterTypes());
-        String result = (String)method.invoke(implClass.newInstance(), invocation.getParameters());
+        String result = (String) method.invoke(implClass.newInstance(), invocation.getParameters());
         IOUtils.write(result,resp.getOutputStream());
 
     }

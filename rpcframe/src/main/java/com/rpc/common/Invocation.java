@@ -1,5 +1,6 @@
 package com.rpc.common;
 
+import com.rpc.register.LocalRegister;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,14 +17,12 @@ public class Invocation implements Serializable {
     private String methodName;
     private Class[] parameterTypes; //参数类型
     private Object[] parameters;  //具体参数
-    private String version = "1.0";
+    private String version;
 
-    public Invocation(String name, String sayhello, String s, Class[] classes, Object[] objects) {
+    public Invocation(String name, String sayhello, Class[] classes, Object[] objects) {
         this.interfaceName = name;
         this.methodName = sayhello;
         this.parameterTypes = classes;
         this.parameters = objects;
-        if(s != null)
-            this.version = s;
     }
 }

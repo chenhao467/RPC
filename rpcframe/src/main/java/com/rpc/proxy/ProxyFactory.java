@@ -16,6 +16,7 @@ import com.rpc.register.MapRemoteRegister;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -34,35 +35,49 @@ public class ProxyFactory {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-                Invocation invocation = new Invocation(interfaceClass.getName(),method.getName(),method.getParameterTypes(),args);
-               //获取拦截器
+                Invocation invocation = new Invocation(interfaceClass.getName(), method.getName(), method.getParameterTypes(), args);
+                //获取拦截器
                 List<RpcInterceptor> interceptors = ConsumerInterceptorRegister.getAll();
                 // before
                 for (RpcInterceptor interceptor : interceptors) {
                     interceptor.beforeInvoke(invocation);
                 }
-                try {
-                    //服务发现
-                    List<URL> list = MapRemoteRegister.get(interfaceClass.getName());
+                int max = 3;
 
-                    //负载均衡
+                //服务发现
+                List<URL> list = MapRemoteRegister.get(interfaceClass.getName());
+
+                //负载均衡
+                Object result = null;
+                List<URL> invokedList = new ArrayList<>();
+
+                //服务调用
+
+                while (max > 0) {
+                    list.remove(invokedList);
                     URL url = Loadbalance.random(list);
-                    //服务调用
-                    Object result;
-                    result = httpClient.send(url.getHostname(),url.getPort(),invocation);
+                    invokedList.add(url);
+                    try {
+                    result = httpClient.send(url.getHostname(), url.getPort(), invocation);
+
+
                     // after
                     for (RpcInterceptor interceptor : interceptors) {
                         interceptor.afterInvoke(invocation, result);
                     }
-
-                    return result;
-                }catch (Exception e){
-
+                    break;
+                }catch(Exception e){
                     for (RpcInterceptor interceptor : interceptors) {
                         interceptor.onException(invocation, e);
                     }
-                    return "";
+                    if (max-- != 0)
+                        continue;
+
+
                 }
+              }
+                return result;
+
             }
         });
         return (T) proxyInstance;

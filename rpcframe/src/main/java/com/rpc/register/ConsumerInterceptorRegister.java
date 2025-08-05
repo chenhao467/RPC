@@ -1,6 +1,6 @@
 package com.rpc.register;
 
-import com.rpc.interceptor.RpcInterceptor;
+import com.rpc.common.interceptor.RpcInterceptor;
 import org.reflections.Reflections;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class ConsumerInterceptorRegister {
     public static List<RpcInterceptor> getInterceptors() {
         return interceptorList;
     }
-    // ✅ 自动扫描并注册所有实现类
+    //  自动扫描并注册所有实现类
     public static void init() {
         // 指定包名（可以传参或常量）
         Reflections reflections = new Reflections("com.rpc.interceptor");

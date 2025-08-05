@@ -1,10 +1,10 @@
-package com.rpc.common;
+package com.rpc.common.entity;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
-/*
+/*'
 *功能：
  作者：chenhao
 *日期： 2025/6/2 下午7:54

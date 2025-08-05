@@ -1,10 +1,8 @@
 package com.rpc;
 
-import com.rpc.common.URL;
-import com.rpc.protocol.HttpServer;
+import com.rpc.common.entity.URL;
+import com.rpc.http.httpserver.HttpServer;
 import com.rpc.register.MapRemoteRegister;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
 /*
 *功能：
@@ -26,7 +24,6 @@ public class Bootstrap {
 
         URL url = new URL("localhost",8080);
         MapRemoteRegister.register(HelloService.class.getName(),url);
-
         HttpServer httpServer = new HttpServer();
         //启动HelloService模块对应的http服务
         httpServer.start(url.getHostname(),url.getPort());

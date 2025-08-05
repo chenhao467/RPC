@@ -1,6 +1,6 @@
 package com.rpc.register;
 
-import com.rpc.common.URL;
+import com.rpc.common.entity.URL;
 
 import java.io.*;
 import java.util.ArrayList;

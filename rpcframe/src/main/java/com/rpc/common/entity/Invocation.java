@@ -1,6 +1,5 @@
-package com.rpc.common;
+package com.rpc.common.entity;
 
-import com.rpc.register.LocalRegister;
 import lombok.Data;
 
 import java.io.Serializable;

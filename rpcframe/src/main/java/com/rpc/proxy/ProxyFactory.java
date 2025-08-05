@@ -1,16 +1,13 @@
 package com.rpc.proxy;
 
-import com.rpc.common.Invocation;
-import com.rpc.common.URL;
-import com.rpc.exception.BusinessException;
-import com.rpc.exception.ResultCodeEnum;
-import com.rpc.interceptor.AuthInterceptor;
-import com.rpc.interceptor.ExceptionLoggingInterceptor;
-import com.rpc.interceptor.RpcInterceptor;
-import com.rpc.loadbalance.Loadbalance;
-import com.rpc.protocol.HttpClient;
+import com.rpc.common.entity.Invocation;
+import com.rpc.common.entity.URL;
+import com.rpc.common.exception.BusinessException;
+import com.rpc.common.exception.ResultCodeEnum;
+import com.rpc.common.interceptor.RpcInterceptor;
+import com.rpc.common.loadbalance.Loadbalance;
+import com.rpc.http.httpsend.HttpClient;
 import com.rpc.register.ConsumerInterceptorRegister;
-import com.rpc.register.LocalRegister;
 import com.rpc.register.MapRemoteRegister;
 
 import java.lang.reflect.InvocationHandler;
@@ -42,38 +39,42 @@ public class ProxyFactory {
                 for (RpcInterceptor interceptor : interceptors) {
                     interceptor.beforeInvoke(invocation);
                 }
-                int max = 3;
+
 
                 //服务发现
-                List<URL> list = MapRemoteRegister.get(interfaceClass.getName());
+                List<URL> originalList = MapRemoteRegister.get(interfaceClass.getName());
+                List<URL> list = new ArrayList<>(originalList); // 拷贝
+
 
                 //负载均衡
+                int max = 3;
                 Object result = null;
                 List<URL> invokedList = new ArrayList<>();
-
                 //服务调用
 
                 while (max > 0) {
-                    list.remove(invokedList);
+                    list.removeAll(invokedList);
+                    //已无可用节点时，抛出异常
+                    if (list.isEmpty()) {
+                        throw new BusinessException(ResultCodeEnum.SERVICE_NOT_FOUND);
+                    }
                     URL url = Loadbalance.random(list);
                     invokedList.add(url);
                     try {
+                       // int i = 1/0;
                     result = httpClient.send(url.getHostname(), url.getPort(), invocation);
-
 
                     // after
                     for (RpcInterceptor interceptor : interceptors) {
                         interceptor.afterInvoke(invocation, result);
                     }
                     break;
-                }catch(Exception e){
+                    }catch(Exception e){
                     for (RpcInterceptor interceptor : interceptors) {
                         interceptor.onException(invocation, e);
                     }
-                    if (max-- != 0)
-                        continue;
-
-
+                        System.err.println("调用失败节点：" + url + "，剩余重试次数：" + (max - 1));
+                        max--;
                 }
               }
                 return result;

@@ -1,6 +1,6 @@
-package com.rpc.interceptor;
+package com.rpc.common.interceptor;
 
-import com.rpc.common.Invocation;
+import com.rpc.common.entity.Invocation;
 
 public class AuthInterceptor implements RpcInterceptor {
     @Override

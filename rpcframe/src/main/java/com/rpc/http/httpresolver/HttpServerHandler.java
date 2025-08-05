@@ -1,6 +1,6 @@
-package com.rpc.protocol;
+package com.rpc.http.httpresolver;
 
-import com.rpc.common.Invocation;
+import com.rpc.common.entity.Invocation;
 import com.rpc.register.LocalRegister;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -25,10 +26,15 @@ public class HttpServerHandler {
         * 又不想像spring一样遍历包下所有类来找出实现类，性能太低
         * 所以我们自己创建一个工具 LocalRegister 启动tomcat之前 将接口和实现类的映射关系注册进容器
         * */
-        Class implClass = LocalRegister.get(interfaceName,  invocation.getVersion()==null?"1.0":invocation.getVersion());
+        Class<?> implClass = LocalRegister.get(interfaceName,  invocation.getVersion()==null?"1.0":invocation.getVersion());
         Method method = implClass.getMethod(invocation.getMethodName(), invocation.getParameterTypes());
-        String result = (String) method.invoke(implClass.newInstance(), invocation.getParameters());
-        IOUtils.write(result,resp.getOutputStream());
+        Object result =  method.invoke(implClass.getDeclaredConstructor().newInstance(), invocation.getParameters());
+        resp.setContentType("text/plain;charset=UTF-8");
+        // 使用 ObjectOutputStream 写回 Object 使用 try-with-resources 语法糖 用于自动关闭资源.
+        try (ObjectOutputStream oos = new ObjectOutputStream(resp.getOutputStream())) {
+            oos.writeObject(result);
+        }
+
 
     }
 }

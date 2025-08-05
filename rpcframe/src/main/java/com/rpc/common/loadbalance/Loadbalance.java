@@ -1,6 +1,6 @@
-package com.rpc.loadbalance;
+package com.rpc.common.loadbalance;
 
-import com.rpc.common.URL;
+import com.rpc.common.entity.URL;
 
 import java.util.List;
 import java.util.Random;

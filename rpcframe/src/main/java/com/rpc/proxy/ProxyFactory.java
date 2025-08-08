@@ -1,15 +1,14 @@
 package com.rpc.proxy;
 
+import com.rpc.Tcp.Tcpsend.TcpClient;
 import com.rpc.common.entity.Invocation;
 import com.rpc.common.entity.URL;
 import com.rpc.common.exception.BusinessException;
 import com.rpc.common.exception.ResultCodeEnum;
 import com.rpc.common.interceptor.RpcInterceptor;
 import com.rpc.common.loadbalance.Loadbalance;
-import com.rpc.http.httpsend.HttpClient;
 import com.rpc.register.ConsumerInterceptorRegister;
 import com.rpc.register.MapRemoteRegister;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -27,12 +26,12 @@ public class ProxyFactory {
         //注册拦截器
         ConsumerInterceptorRegister.init();
         Object proxyInstance = Proxy.newProxyInstance(interfaceClass.getClassLoader(), new Class[]{interfaceClass}, new InvocationHandler() {
-        HttpClient httpClient = new HttpClient();
+        TcpClient tcpClient = new TcpClient("localhost", 8080);
 
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-                Invocation invocation = new Invocation(interfaceClass.getName(), method.getName(), method.getParameterTypes(), args);
+                Invocation invocation = new Invocation(interfaceClass.getSimpleName(), method.getName(), method.getParameterTypes(), args,"1.0");
                 //获取拦截器
                 List<RpcInterceptor> interceptors = ConsumerInterceptorRegister.getAll();
                 // before
@@ -62,7 +61,7 @@ public class ProxyFactory {
                     invokedList.add(url);
                     try {
                        // int i = 1/0;
-                    result = httpClient.send(url.getHostname(), url.getPort(), invocation);
+                    result = tcpClient.send(invocation);
 
                     // after
                     for (RpcInterceptor interceptor : interceptors) {

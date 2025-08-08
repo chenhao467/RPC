@@ -18,10 +18,11 @@ public class Invocation implements Serializable {
     private Object[] parameters;  //具体参数
     private String version;
 
-    public Invocation(String name, String sayhello, Class[] classes, Object[] objects) {
+    public Invocation(String name, String sayhello, Class[] classes, Object[] objects, String version) {
         this.interfaceName = name;
         this.methodName = sayhello;
         this.parameterTypes = classes;
         this.parameters = objects;
+        this.version = version;
     }
 }

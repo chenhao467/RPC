@@ -1,4 +1,4 @@
-package com.rpc.http.httpresolver;
+package com.rpc.Tcp.Tcpresolver;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;

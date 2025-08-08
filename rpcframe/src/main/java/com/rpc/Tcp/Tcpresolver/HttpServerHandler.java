@@ -1,10 +1,9 @@
-package com.rpc.http.httpresolver;
+package com.rpc.Tcp.Tcpresolver;
 
 import com.rpc.common.entity.Invocation;
 import com.rpc.register.LocalRegister;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,7 +25,7 @@ public class HttpServerHandler {
         * 又不想像spring一样遍历包下所有类来找出实现类，性能太低
         * 所以我们自己创建一个工具 LocalRegister 启动tomcat之前 将接口和实现类的映射关系注册进容器
         * */
-        Class<?> implClass = LocalRegister.get(interfaceName,  invocation.getVersion()==null?"1.0":invocation.getVersion());
+        Class<?> implClass = LocalRegister.get(interfaceName, invocation.getVersion()).getClass();
         Method method = implClass.getMethod(invocation.getMethodName(), invocation.getParameterTypes());
         Object result =  method.invoke(implClass.getDeclaredConstructor().newInstance(), invocation.getParameters());
         resp.setContentType("text/plain;charset=UTF-8");

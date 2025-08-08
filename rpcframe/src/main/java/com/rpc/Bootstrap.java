@@ -1,8 +1,10 @@
 package com.rpc;
 
+import com.rpc.Tcp.Tcpserver.TcpServer;
 import com.rpc.common.entity.URL;
-import com.rpc.http.httpserver.HttpServer;
 import com.rpc.register.MapRemoteRegister;
+
+import java.io.IOException;
 
 /*
 *功能：
@@ -10,7 +12,7 @@ import com.rpc.register.MapRemoteRegister;
 *日期： 2025/6/2 下午9:20
 */
 public class Bootstrap {
-    public static void start(){
+    public static void start() throws IOException {
         //注册中心注册
         /*
          * 注册中心三要素：
@@ -24,8 +26,7 @@ public class Bootstrap {
 
         URL url = new URL("localhost",8080);
         MapRemoteRegister.register(HelloService.class.getName(),url);
-        HttpServer httpServer = new HttpServer();
-        //启动HelloService模块对应的http服务
-        httpServer.start(url.getHostname(),url.getPort());
+        TcpServer tcpServer = new TcpServer(8080);
+        tcpServer.start();
     }
 }

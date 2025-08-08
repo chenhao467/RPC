@@ -9,14 +9,15 @@ import java.util.Map;
 *日期： 2025/5/26 下午9:15
 */
 public class LocalRegister {
-    private static Map<String,Class> map = new HashMap<>();
+    private static Map<String,Object> map = new HashMap<>();
 
-    public static void register(String interfaceName,String version,Class implClass)
+    public static void register(String interfaceName,String version,Object implClass)
     {
     	map.put(interfaceName+version,implClass);
     }
-    public static Class get(String interfaceName,String version)
+    public static Object get(String interfaceName,String version)
     {
     	return map.get(interfaceName+version);
     }
+
 }

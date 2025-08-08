@@ -1,11 +1,12 @@
 package com.rpc.common.exception;
 
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 public class BusinessException extends RuntimeException {
     private static final Logger log = LoggerFactory.getLogger(BusinessException.class);
     private final Integer code;
+
 
     public BusinessException(Integer code, String message) {
         super(message);
@@ -18,5 +19,9 @@ public class BusinessException extends RuntimeException {
 
     public Integer getCode() {
         return code;
+    }
+    public BusinessException(ResultCodeEnum resultCodeEnum, Throwable cause) {
+        super(resultCodeEnum.getMessage(), cause); // 将 cause 传给父类
+        this.code = resultCodeEnum.getCode();
     }
 }

@@ -3,6 +3,8 @@ package com.rpc;
 import com.rpc.proxy.ProxyFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.io.IOException;
+
 /*
 *功能：
  作者：chenhao
@@ -10,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 */
 @SpringBootApplication
 public class Consumer {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
 
         HelloService helloService =  ProxyFactory.getProxy(HelloService.class);
